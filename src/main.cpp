@@ -14,11 +14,11 @@ int main(int argc, char const** argv) {
     seqan3::argument_parser parser("RLZ-Parser", argc, argv);
     std::string ref_file;
     std::string seq_file;
-    bool dump_files{false};
+    bool decompress;
 
     parser.add_positional_option(ref_file, "Reference file to compress.");
     parser.add_positional_option(seq_file, "Sequence file to compress.");
-    parser.add_flag(dump_files, 'f', "dump", "Dump intermediate files.");
+    parser.add_flag(decompress, 'd', "decompress", "Decompress the sequence file.");
     parser.info.version = "1.0.0";
     parser.info.author = "Dhruv R Makwana";
     parser.info.short_description = "RLZ compression tool.";
@@ -35,8 +35,11 @@ int main(int argc, char const** argv) {
         return -1;
     }
 
-    RLZ rlz(ref_file, seq_file, dump_files);
-    rlz.compress();
-    rlz.decompress();
-
+    RLZ rlz(ref_file, seq_file);
+    if(decompress){
+        rlz.decompress();
+    } else {
+        rlz.compress();
+    }
+    return 0;
 }

@@ -1,14 +1,8 @@
 #include "rlz.h"
 
-RLZ::RLZ(std::string ref_file, std::string seq_file, bool dump_files)
-    : ref_file(ref_file), seq_file(seq_file), dump_files(dump_files) {
+RLZ::RLZ(std::string ref_file, std::string seq_file)
+    : ref_file(ref_file), seq_file(seq_file) {
     load_file_to_vector(ref_file, ref_vec);
-    fm = seqan3::fm_index(ref_vec);
-
-    if (dump_files) {
-        // use cereal for dumping (implementation not shown)
-    }
-
     load_file_to_vector(seq_file, seq_vec);
 }
 
@@ -31,7 +25,13 @@ void RLZ::compress() {
     if (!compressed.empty()) {
         compressed.clear();
     }
-
+    fm = seqan3::fm_index(ref_vec);
+    {
+        std::ofstream os(ref_file.substr(0, ref_file.find('.')) + ".fmi",
+                         std::ios::binary);
+        cereal::BinaryOutputArchive archive(os);
+        archive(fm);
+    }
     auto cursor = fm.cursor();
     size_t size = 0;
 
@@ -49,11 +49,29 @@ void RLZ::compress() {
     }
 
     compressed.emplace_back(cursor.locate().front().second, size);
-    seqan3::debug_stream << compressed << std::endl;
+    {
+        std::ofstream os(seq_file.substr(0, seq_file.find('.')) + ".rlz",
+                         std::ios::binary);
+        cereal::BinaryOutputArchive archive(os);
+        archive(compressed);
+    }
 }
 
 void RLZ::decompress() {
-    std::ofstream decomp_file("decompressed.fa");
+    {
+        std::ifstream is(seq_file.substr(0, seq_file.find('.')) + ".rlz",
+                         std::ios::binary);
+        cereal::BinaryInputArchive archive(is);
+        archive(compressed);
+    }
+    {
+        std::ifstream is(ref_file.substr(0, ref_file.find('.')) + ".fmi",
+                         std::ios::binary);
+        cereal::BinaryInputArchive archive(is);
+        archive(fm);
+    }
+    std::ofstream decomp_file(seq_file.substr(0, seq_file.find('.')) +
+                              "_decompressed.fa");
     if (!decomp_file) {
         throw std::runtime_error("Failed to open decompressed.fa for writing");
     }
