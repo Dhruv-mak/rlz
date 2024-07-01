@@ -12,8 +12,8 @@ MySeqAnProject is a C++ application that demonstrates the use of the SeqAn3 libr
 
 ## Dependencies
 
-- CMake 3.10 or higher - https://cmake.org/
-- SeqAn3 library - https://github.com/seqan/seqan3
+- [CMake](https://cmake.org/) 3.10 or higher
+- [SeqAn3](https://github.com/seqan/seqan3) library
 
 ## Getting Started
 
@@ -55,6 +55,7 @@ After building the project, an executable named rlz will be created in the build
 
 ### Project Structure
 
+```
 rlz/
 ├── CMakeLists.txt
 ├── src/
@@ -62,12 +63,13 @@ rlz/
 │   ├── rlz.h
 │   └── rlz.cpp
 ├── build/
+```
 
 ### License
 
-This project is licensed under the MIT License - see the LICENSE file for details - https://github.com/Dhruv-mak/rlz/main/LICENSE
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Dhruv-mak/rlz/blob/main/LICENSE) file for details
 
 ### Acknowledgements
 
-- SeqAn3 library for providing powerful tools for biological sequence analysis - https://docs.seqan.de/seqan3/main_user/index.html
-- S. Kuruppu, S. J. Puglisi and J. Zobel, Relative Lempel-Ziv Compression of Genomes for Large-Scale Storage and Retrieval. Proc. 17th International Symposium on String Processing and Information Retrieval (SPIRE 2010) Lecture Notes in Computer Science, Volume 6393, (2010) pp. 201-206 - http://dx.doi.org/10.1007/978-3-642-16321-0_20
+- [SeqAn3](https://docs.seqan.de/seqan3/main_user/index.html) library for providing powerful tools for biological sequence analysis 
+- [S. Kuruppu, S. J. Puglisi and J. Zobel, Relative Lempel-Ziv Compression of Genomes for Large-Scale Storage and Retrieval](http://dx.doi.org/10.1007/978-3-642-16321-0_20). Proc. 17th International Symposium on String Processing and Information Retrieval (SPIRE 2010) Lecture Notes in Computer Science, Volume 6393, (2010) pp. 201-206. 
