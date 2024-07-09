@@ -13,11 +13,9 @@ void RLZ::load_file_to_vector(const std::string& file_path,
         throw std::runtime_error("Failed to open file: " + file_path);
     }
 
-    std::string line;
-    while (std::getline(file, line)) {
-        for (char c : line) {
-            vec.push_back(seqan3::assign_char_to(c, seqan3::dna5{}));
-        }
+    char c;
+    while (file.get(c)) {
+        vec.push_back(seqan3::assign_char_to(c, seqan3::dna5{}));
     }
 }
 
@@ -27,7 +25,7 @@ void RLZ::compress() {
     }
     fm = seqan3::fm_index(ref_vec);
     {
-        std::ofstream os(ref_file.substr(0, ref_file.find('.')) + ".fmi",
+        std::ofstream os(ref_file.substr(0, ref_file.rfind('.')) + ".fmi",
                          std::ios::binary);
         cereal::BinaryOutputArchive archive(os);
         archive(fm);
@@ -50,7 +48,7 @@ void RLZ::compress() {
 
     compressed.emplace_back(cursor.locate().front().second, size);
     {
-        std::ofstream os(seq_file.substr(0, seq_file.find('.')) + ".rlz",
+        std::ofstream os(seq_file.substr(0, seq_file.rfind('.')) + ".rlz",
                          std::ios::binary);
         cereal::BinaryOutputArchive archive(os);
         archive(compressed);
@@ -59,18 +57,18 @@ void RLZ::compress() {
 
 void RLZ::decompress() {
     {
-        std::ifstream is(seq_file.substr(0, seq_file.find('.')) + ".rlz",
+        std::ifstream is(seq_file.substr(0, seq_file.rfind('.')) + ".rlz",
                          std::ios::binary);
         cereal::BinaryInputArchive archive(is);
         archive(compressed);
     }
     {
-        std::ifstream is(ref_file.substr(0, ref_file.find('.')) + ".fmi",
+        std::ifstream is(ref_file.substr(0, ref_file.rfind('.')) + ".fmi",
                          std::ios::binary);
         cereal::BinaryInputArchive archive(is);
         archive(fm);
     }
-    std::ofstream decomp_file(seq_file.substr(0, seq_file.find('.')) +
+    std::ofstream decomp_file(seq_file.substr(0, seq_file.rfind('.')) +
                               "_decompressed.fa");
     if (!decomp_file) {
         throw std::runtime_error("Failed to open decompressed.fa for writing");
