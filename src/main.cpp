@@ -15,10 +15,12 @@ int main(int argc, char const** argv) {
     std::string ref_file;
     std::string seq_file;
     bool decompress;
+    bool dic_files;
 
     parser.add_positional_option(ref_file, "Reference file to compress.");
     parser.add_positional_option(seq_file, "Sequence file to compress.");
     parser.add_flag(decompress, 'd', "decompress", "Decompress the sequence file.");
+    parser.add_flag(dic_files, 'f', "dump_dic_files", "Dump the dictionary files for the big-repair.");
     parser.info.version = "1.0.0";
     parser.info.author = "Dhruv R Makwana";
     parser.info.short_description = "RLZ compression tool.";
@@ -28,16 +30,19 @@ int main(int argc, char const** argv) {
         "sequence file is then compressed using the FM Index. The compressed "
         "file is then written to disk."};
     
-    try {
-        parser.parse();
-    } catch (seqan3::argument_parser_error const & ext) {
-        seqan3::debug_stream << "[PARSER ERROR] " << ext.what() << "\n";
-        return -1;
-    }
-
+    // try {
+    //     parser.parse();
+    // } catch (seqan3::argument_parser_error const & ext) {
+    //     seqan3::debug_stream << "[PARSER ERROR] " << ext.what() << "\n";
+    //     return -1;
+    // }
+    ref_file = "../../data/ref.fa";
+    seq_file = "../../data/seq.fa";
+    dic_files = true;
+    decompress = true;
     RLZ rlz(ref_file, seq_file);
     if(decompress){
-        rlz.decompress();
+        rlz.decompress(dic_files);
     } else {
         rlz.compress();
     }

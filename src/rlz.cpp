@@ -55,7 +55,9 @@ void RLZ::compress() {
     }
 }
 
-void RLZ::decompress() {
+void RLZ::decompress(bool &dic_files) {
+    std::ofstream dicz;
+    std::ofstream dicl;
     {
         std::ifstream is(seq_file.substr(0, seq_file.rfind('.')) + ".rlz",
                          std::ios::binary);
@@ -68,6 +70,10 @@ void RLZ::decompress() {
         cereal::BinaryInputArchive archive(is);
         archive(fm);
     }
+    if (dic_files) {
+        dicz.open(seq_file.substr(0, seq_file.rfind('.')) + ".dicz");
+        dicl.open(seq_file.substr(0, seq_file.rfind('.')) + ".dicz.len");
+    }
     std::ofstream decomp_file(seq_file.substr(0, seq_file.rfind('.')) +
                               "_decompressed.fa");
     if (!decomp_file) {
@@ -77,6 +83,16 @@ void RLZ::decompress() {
     for (const auto& p : compressed) {
         for (size_t i = 0; i < p.second; ++i) {
             decomp_file << seqan3::to_char(ref_vec[p.first + i]);
+            if (dic_files) {
+                dicz << static_cast<uint8_t>(seqan3::to_char(ref_vec[p.first + i]));
+            }
         }
+        if (dic_files) {
+            dicl << static_cast<int32_t>(p.second);
+        }
+    }
+    if (dic_files) {
+        dicz.close();
+        dicl.close();
     }
 }

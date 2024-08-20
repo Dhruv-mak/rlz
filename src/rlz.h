@@ -24,7 +24,7 @@ public:
 
     RLZ(std::string ref_file, std::string seq_file);
     void compress();
-    void decompress();
+    void decompress(bool &dic_files);
     
 private:
     void load_file_to_vector(const std::string& file_path, seqan3::bitpacked_sequence<seqan3::dna5>& vec);
